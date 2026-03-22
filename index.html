@@ -1,38 +1,141 @@
-<script>
-  let isPro = false; // 👈 AQUI
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>HF Odds Engine PRO</title>
 
-  let historico = [];
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f14;
+      color: white;
+    }
 
-  async function carregar() {
-    const res = await fetch("https://hf-ia-production.up.railway.app/value-bets");
-    const data = await res.json();
+    header {
+      background: #111;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      color: #00ff88;
+      font-weight: bold;
+      border-bottom: 2px solid #00ff88;
+    }
 
-    const lista = isPro ? data : data.slice(0,2); // 👈 AQUI
+    button {
+      background: #00ff88;
+      color: black;
+      border: none;
+      padding: 10px 15px;
+      margin: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-    let html = "";
+    button:hover {
+      opacity: 0.8;
+    }
 
-    lista.forEach(b => {
-      html += `
-        <div style="margin:20px;padding:15px;background:#111;border-radius:10px">
-          <h3>${b.jogo}</h3>
-          <p>Probabilidade: ${b.prob}</p>
-          <p>Odd: ${b.odd}</p>
-          <p style="color:${b.ev > 0 ? 'lime' : 'red'}">EV: ${b.ev}</p>
-          <button onclick="salvar('${b.jogo}')">Salvar</button>
-        </div>
-      `;
-    });
+    .container {
+      padding: 15px;
+    }
 
-    document.getElementById("resultado").innerHTML = html;
-  }
+    .card {
+      background: #111;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      border-left: 5px solid #00ff88;
+    }
 
-  function salvar(jogo){
-    historico.push(jogo);
-    document.getElementById("historico").innerHTML += `<p>${jogo}</p>`;
-  }
+    .ev-pos {
+      color: lime;
+      font-weight: bold;
+    }
 
-  function login(){
-    isPro = true;
-    alert("Modo PRO ativado 🔥");
-  }
-</script>
+    .ev-neg {
+      color: red;
+    }
+
+    .section-title {
+      margin-top: 25px;
+      font-size: 18px;
+      color: #00ff88;
+    }
+
+    .login-btn {
+      background: orange;
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    HF Odds Engine 🔥
+  </header>
+
+  <div class="container">
+
+    <button onclick="carregar()">Buscar Apostas</button>
+    <button class="login-btn" onclick="login()">Entrar PRO</button>
+
+    <div class="section-title">📊 Apostas</div>
+    <div id="resultado"></div>
+
+    <div class="section-title">📈 Histórico</div>
+    <div id="historico"></div>
+
+  </div>
+
+  <script>
+    let isPro = false;
+    let historico = [];
+
+    async function carregar() {
+      try {
+        const res = await fetch("https://hf-ia-production.up.railway.app/value-bets");
+        const data = await res.json();
+
+        const lista = isPro ? data : data.slice(0, 2);
+
+        let html = "";
+
+        lista.forEach(b => {
+          html += `
+            <div class="card">
+              <h3>${b.jogo}</h3>
+              <p>📊 Probabilidade: ${b.prob}</p>
+              <p>💰 Odd: ${b.odd}</p>
+              <p class="${b.ev > 0 ? 'ev-pos' : 'ev-neg'}">
+                EV: ${b.ev}
+              </p>
+              <button onclick="salvar('${b.jogo}')">Salvar</button>
+            </div>
+          `;
+        });
+
+        document.getElementById("resultado").innerHTML = html;
+
+      } catch (err) {
+        document.getElementById("resultado").innerHTML =
+          "<p style='color:red'>Erro ao carregar dados</p>";
+      }
+    }
+
+    function salvar(jogo) {
+      historico.push(jogo);
+      document.getElementById("historico").innerHTML += `<p>✔️ ${jogo}</p>`;
+    }
+
+    function login() {
+      isPro = true;
+      alert("Modo PRO ativado 🔥");
+      carregar(); // recarrega mostrando tudo
+    }
+  </script>
+
+</body>
+</html>

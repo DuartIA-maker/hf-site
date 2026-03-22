@@ -1,54 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>HF Odds Engine PRO</title>
-</head>
+<script>
+  let isPro = false; // 👈 AQUI
 
-<body style="background:#0b0f14;color:white;font-family:sans-serif">
+  let historico = [];
 
-  <h1 style="color:#00ff88">HF Odds Engine 🔥</h1>
+  async function carregar() {
+    const res = await fetch("https://hf-ia-production.up.railway.app/value-bets");
+    const data = await res.json();
 
-  <button onclick="carregar()">Buscar Apostas</button>
+    const lista = isPro ? data : data.slice(0,2); // 👈 AQUI
 
-  <h2>📊 Apostas</h2>
-  <div id="resultado"></div>
+    let html = "";
 
-  <h2>📈 Histórico</h2>
-  <div id="historico"></div>
+    lista.forEach(b => {
+      html += `
+        <div style="margin:20px;padding:15px;background:#111;border-radius:10px">
+          <h3>${b.jogo}</h3>
+          <p>Probabilidade: ${b.prob}</p>
+          <p>Odd: ${b.odd}</p>
+          <p style="color:${b.ev > 0 ? 'lime' : 'red'}">EV: ${b.ev}</p>
+          <button onclick="salvar('${b.jogo}')">Salvar</button>
+        </div>
+      `;
+    });
 
-  <h2>🔐 Área PRO</h2>
-  <button onclick="alert('Em breve plano PRO 💰')">Entrar</button>
+    document.getElementById("resultado").innerHTML = html;
+  }
 
-  <script>
-    let historico = [];
+  function salvar(jogo){
+    historico.push(jogo);
+    document.getElementById("historico").innerHTML += `<p>${jogo}</p>`;
+  }
 
-    async function carregar() {
-      const res = await fetch("https://hf-ia-production.up.railway.app/value-bets");
-      const data = await res.json();
+  function login(){
+    isPro = true;
+    alert("Modo PRO ativado 🔥");
+  }
+</script>
+<button onclick="login()">Entrar</button>
+<button onclick="login()">Entrar</button>
 
-      let html = "";
-
-      data.forEach(b => {
-
-        html += `
-          <div style="margin:20px;padding:15px;background:#111;border-radius:10px">
-            <h3>${b.jogo}</h3>
-            <p>Probabilidade: ${b.prob}</p>
-            <p>Odd: ${b.odd}</p>
-            <p style="color:${b.ev > 0 ? 'lime' : 'red'}">EV: ${b.ev}</p>
-            <button onclick="salvar('${b.jogo}')">Salvar</button>
-          </div>
-        `;
-      });
-
-      document.getElementById("resultado").innerHTML = html;
-    }
-
-    function salvar(jogo){
-      historico.push(jogo);
-      document.getElementById("historico").innerHTML += `<p>${jogo}</p>`;
-    }
-  </script>
-
-</body>
-</html>
+<script>
+function login(){
+  isPro = true;
+  alert("Modo PRO ativado 🔥");
+}
+</script>

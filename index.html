@@ -130,11 +130,16 @@
       document.getElementById("historico").innerHTML += `<p>✔️ ${jogo}</p>`;
     }
 
-    function login() {
-      isPro = true;
-      alert("Modo PRO ativado 🔥");
-      carregar(); // recarrega mostrando tudo
-    }
+    function login(){
+  const senha = prompt("Digite a senha PRO:");
+
+  if(senha === "1234"){
+    isPro = true;
+    alert("Acesso liberado 🔥");
+  } else {
+    alert("Acesso negado");
+  }
+}
   </script>
 
 </body>

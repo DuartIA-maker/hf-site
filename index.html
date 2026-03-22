@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HF Odds Engine</title>
+  <title>HF Odds Engine PRO</title>
 </head>
-<body style="background:black;color:white;font-family:sans-serif">
-  <h1>HF Odds Engine 🔥</h1>
+
+<body style="background:#0b0f14;color:white;font-family:sans-serif">
+
+  <h1 style="color:#00ff88">HF Odds Engine 🔥</h1>
+
   <button onclick="carregar()">Buscar Apostas</button>
 
+  <h2>📊 Apostas</h2>
   <div id="resultado"></div>
 
+  <h2>📈 Histórico</h2>
+  <div id="historico"></div>
+
+  <h2>🔐 Área PRO</h2>
+  <button onclick="alert('Em breve plano PRO 💰')">Entrar</button>
+
   <script>
+    let historico = [];
+
     async function carregar() {
       const res = await fetch("https://hf-ia-production.up.railway.app/value-bets");
       const data = await res.json();
@@ -17,40 +29,26 @@
       let html = "";
 
       data.forEach(b => {
+
         html += `
-          <div style="margin-top:20px">
+          <div style="margin:20px;padding:15px;background:#111;border-radius:10px">
             <h3>${b.jogo}</h3>
-            <p>${b.aposta}</p>
+            <p>Probabilidade: ${b.prob}</p>
             <p>Odd: ${b.odd}</p>
-            <p style="color:lime">EV: ${b.ev}</p>
+            <p style="color:${b.ev > 0 ? 'lime' : 'red'}">EV: ${b.ev}</p>
+            <button onclick="salvar('${b.jogo}')">Salvar</button>
           </div>
         `;
       });
 
       document.getElementById("resultado").innerHTML = html;
     }
+
+    function salvar(jogo){
+      historico.push(jogo);
+      document.getElementById("historico").innerHTML += `<p>${jogo}</p>`;
+    }
   </script>
+
 </body>
 </html>
-<h2>Histórico</h2>
-<div id="historico"></div>
-
-<script>
-let historico = [];
-
-function salvar(aposta) {
-  historico.push(aposta);
-  document.getElementById("historico").innerHTML += `<p>${aposta}</p>`;
-}
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
-<input id="email" placeholder="Email">
-<input id="senha" type="password" placeholder="Senha">
-<button onclick="login()">Entrar</button>
-
-<script>
-function login(){
-  alert("Login será integrado Firebase");
-}
-</script>
